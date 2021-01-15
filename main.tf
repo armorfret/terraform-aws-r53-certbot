@@ -24,6 +24,7 @@ data "aws_iam_policy_document" "certbot_validation" {
   statement {
     actions = [
       "route53:ListHostedZones",
+      "route53:GetChange",
     ]
 
     resources = [
