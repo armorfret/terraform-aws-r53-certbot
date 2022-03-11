@@ -1,12 +1,13 @@
 terraform {
   required_providers {
     aws = {
-      version = "3.4.0"
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
     }
 
     awscreds = {
       source  = "terraform.scrtybybscrty.org/armorfret/awscreds"
-      version = "0.2.0"
+      version = "~> 0.3"
     }
   }
 }
@@ -53,7 +54,7 @@ resource "aws_route53_delegation_set" "this" {
 
 module "subzone" {
   source            = "armorfret/r53-zone/aws"
-  version           = "0.3.2"
+  version           = "0.4.0"
   admin_email       = var.admin_email
   domain_name       = var.subzone_name
   delegation_set_id = aws_route53_delegation_set.this.id
