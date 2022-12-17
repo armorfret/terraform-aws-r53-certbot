@@ -23,8 +23,14 @@ variable "parent_zone_id" {
   type        = string
 }
 
-variable "caa_records" {
-  description = "CAA records for certificate"
+variable "issue_list" {
+  description = "Allowed issuers for this certificate"
   type        = list(string)
-  default     = []
+  default     = ["letsencrypt.org; validationmethods=dns-01"]
+}
+
+variable "issuewild_list" {
+  description = "Allowed issuers for this certificate"
+  type        = list(string)
+  default     = [";"]
 }

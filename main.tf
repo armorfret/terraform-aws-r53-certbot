@@ -13,12 +13,11 @@ terraform {
 }
 
 locals {
-  default_caa_records = [
+  caa_records = flatten([
     "0 iodef \"mailto:${var.admin_email}\"",
-    "0 issuewild \";\"",
-    "0 issue \"letsencrypt.org\"",
-  ]
-  parsed_caa_records = coalescelist(var.caa_records, local.default_caa_records)
+    formatlist("0 issuewild \"%s\"", var.issuewild_list),
+    formatlist("0 issue \"%s\"", var.issue_list),
+  ])
 }
 
 data "aws_iam_policy_document" "certbot_validation" {
@@ -73,7 +72,7 @@ resource "aws_route53_record" "caa" {
   name    = var.cert_name
   type    = "CAA"
   ttl     = "60"
-  records = local.parsed_caa_records
+  records = local.caa_records
 }
 
 resource "aws_route53_record" "acme_cname" {
