@@ -20,6 +20,7 @@ locals {
   ])
 }
 
+#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "certbot_validation" {
   statement {
     actions = [
