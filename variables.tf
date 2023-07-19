@@ -3,11 +3,6 @@ variable "admin_email" {
   type        = string
 }
 
-variable "subzone_name" {
-  description = "Subdomain name for certificate validation zone"
-  type        = string
-}
-
 variable "cert_name" {
   description = "Certificate name"
   type        = string
