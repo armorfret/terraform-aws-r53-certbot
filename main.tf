@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "certbot_validation" {
 }
 
 resource "aws_route53_record" "caa" {
-  zone_id = var.parent_zone_id
+  zone_id = var.zone_id
   name    = var.cert_name
   type    = "CAA"
   ttl     = "60"
