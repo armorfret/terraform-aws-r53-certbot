@@ -38,34 +38,28 @@ data "aws_iam_policy_document" "certbot_validation" {
   statement {
     actions = [
       "route53:GetHostedZone",
-      "route53:ListResourceRecordSets",
+    ]
+
+    resources = [
+      "arn:aws:route53:::hostedzone/${var.zone_id}",
+    ]
+  }
+
+  statement {
+    actions = [
       "route53:ChangeResourceRecordSets",
     ]
 
     resources = [
-      "arn:aws:route53:::hostedzone/${module.subzone.zone_id}",
+      "arn:aws:route53:::hostedzone/${var.zone_id}",
     ]
+
+    condition {
+      test     = "ForAllValues:StringEquals"
+      variable = "route53:ChangeResourceRecordSetsNormalizedRecordNames"
+      values   = ["_acme-challenge.${var.cert_name}"]
+    }
   }
-}
-
-resource "aws_route53_delegation_set" "this" {
-  reference_name = var.delegation_set_id
-}
-
-module "subzone" {
-  source            = "armorfret/r53-zone/aws"
-  version           = "0.6.0"
-  admin_email       = var.admin_email
-  domain_name       = var.subzone_name
-  delegation_set_id = aws_route53_delegation_set.this.id
-}
-
-resource "aws_route53_record" "ns" {
-  zone_id = var.parent_zone_id
-  name    = var.subzone_name
-  type    = "NS"
-  ttl     = "60"
-  records = aws_route53_delegation_set.this.name_servers
 }
 
 resource "aws_route53_record" "caa" {
@@ -76,16 +70,8 @@ resource "aws_route53_record" "caa" {
   records = local.caa_records
 }
 
-resource "aws_route53_record" "acme_cname" {
-  zone_id = var.parent_zone_id
-  name    = "_acme-challenge.${var.cert_name}"
-  type    = "CNAME"
-  ttl     = "60"
-  records = ["_acme-challenge.${var.subzone_name}"]
-}
-
 resource "aws_iam_user_policy" "this" {
-  name   = "certbot_${var.subzone_name}"
+  name   = "certbot_${var.cert_name}"
   user   = aws_iam_user.this.name
   policy = data.aws_iam_policy_document.certbot_validation.json
 }
@@ -96,6 +82,6 @@ resource "awscreds_iam_access_key" "this" {
 }
 
 resource "aws_iam_user" "this" {
-  name = "certbot_${var.subzone_name}"
+  name = "certbot_${var.cert_name}"
 }
 

@@ -3,11 +3,6 @@ variable "admin_email" {
   type        = string
 }
 
-variable "delegation_set_id" {
-  description = "Delegation set ID to reuse"
-  type        = string
-}
-
 variable "subzone_name" {
   description = "Subdomain name for certificate validation zone"
   type        = string
@@ -18,7 +13,7 @@ variable "cert_name" {
   type        = string
 }
 
-variable "parent_zone_id" {
+variable "zone_id" {
   description = "Parent zone for delegation"
   type        = string
 }
