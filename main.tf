@@ -20,16 +20,15 @@ locals {
   ])
 }
 
-#tfsec:ignore:aws-iam-no-policy-wildcards
 data "aws_iam_policy_document" "certbot_validation" {
   statement {
     actions = [
       "route53:ListHostedZones",
       "route53:ListHostedZonesByName",
-      "route53:ListResourceRecordSets",
       "route53:GetChange",
     ]
 
+    #tfsec:ignore:aws-iam-no-policy-wildcards
     resources = [
       "*",
     ]
@@ -38,6 +37,7 @@ data "aws_iam_policy_document" "certbot_validation" {
   statement {
     actions = [
       "route53:GetHostedZone",
+      "route53:ListResourceRecordSets",
     ]
 
     resources = [
@@ -81,6 +81,7 @@ resource "awscreds_iam_access_key" "this" {
   file = "creds/${aws_iam_user.this.name}"
 }
 
+#tfsec:ignore:aws-iam-no-user-attached-policies
 resource "aws_iam_user" "this" {
   name = "certbot_${var.cert_name}"
 }
