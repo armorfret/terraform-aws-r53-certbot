@@ -28,8 +28,7 @@ data "aws_iam_policy_document" "certbot_validation" {
       "route53:GetChange",
     ]
 
-    #tfsec:ignore:aws-iam-no-policy-wildcards
-    resources = [
+    resources = [ #trivy:ignore:AVD-AWS-0057
       "*",
     ]
   }
@@ -81,8 +80,7 @@ resource "awscreds_iam_access_key" "this" {
   file = "creds/${aws_iam_user.this.name}"
 }
 
-#tfsec:ignore:aws-iam-no-user-attached-policies
-resource "aws_iam_user" "this" {
+resource "aws_iam_user" "this" { #trivy:ignore:AVD-AWS-0143
   name = "certbot_${var.cert_name}"
 }
 
