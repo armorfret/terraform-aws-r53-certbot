@@ -17,10 +17,12 @@ variable "issue_list" {
   description = "Allowed issuers for this certificate"
   type        = list(string)
   default     = ["letsencrypt.org; validationmethods=dns-01"]
+  nullable    = false
 }
 
 variable "issuewild_list" {
   description = "Allowed issuers for this certificate"
   type        = list(string)
   default     = [";"]
+  nullable    = false
 }
